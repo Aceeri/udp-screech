@@ -5,6 +5,7 @@ version = "0.1.0"
 
 [dependencies]
 igd = "0.12.0"
+link-conditioner = {path = "../link-conditioner"}
 my_internet_ip = "0.1.1"
 
 [[bin]]

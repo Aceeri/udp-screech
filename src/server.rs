@@ -1,4 +1,9 @@
-use std::net::{Ipv4Addr, SocketAddrV4, UdpSocket};
+use std::{
+    net::{Ipv4Addr, SocketAddrV4, UdpSocket},
+    time::Duration,
+};
+
+use link_conditioner::*;
 
 fn get_local_ipaddress() -> Option<String> {
     let socket = match UdpSocket::bind("0.0.0.0:0") {
@@ -45,22 +50,26 @@ fn main() {
     }
 
     println!("binding to {:?}", local_addr);
-    let socket = UdpSocket::bind((local_addr, port)).unwrap();
+    let socket = UdpConditioner::bind_conditioned(
+        ConditionerConfig {
+            latency: Duration::from_millis(200),
+            jitter: Duration::from_millis(50),
+            packet_loss: 0.1,
+        },
+        (local_addr, port),
+    )
+    .unwrap();
     socket
         .set_nonblocking(true)
         .expect("Can't set non-blocking mode");
-    let mut read_buffer = [0u8; 4];
+    let mut read_buffer = [0u8; 1];
     loop {
-        std::thread::sleep(std::time::Duration::from_millis(1000));
         loop {
             if let Ok((n, addr)) = socket.recv_from(&mut read_buffer) {
-                println!("recv {} bytes from {:?}", n, addr);
-                println!("read_buffer: {:?}", read_buffer);
+                println!("{:?}: recv: {:?}", std::time::Instant::now(), read_buffer);
             } else {
                 break;
             }
         }
-
-        println!("rustlin");
     }
 }

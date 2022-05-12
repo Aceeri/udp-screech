@@ -161,6 +161,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "link-conditioner"
+version = "0.1.0"
+dependencies = [
+ "rand",
+]
+
+[[package]]
 name = "log"
 version = "0.4.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -291,6 +298,7 @@ name = "udp-screech"
 version = "0.1.0"
 dependencies = [
  "igd",
+ "link-conditioner",
  "my_internet_ip",
 ]
 
