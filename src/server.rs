@@ -3,8 +3,6 @@ use std::{
     time::Duration,
 };
 
-use link_conditioner::*;
-
 fn get_local_ipaddress() -> Option<String> {
     let socket = match UdpSocket::bind("0.0.0.0:0") {
         Ok(s) => s,
@@ -50,15 +48,7 @@ fn main() {
     }
 
     println!("binding to {:?}", local_addr);
-    let socket = UdpConditioner::bind_conditioned(
-        ConditionerConfig {
-            latency: Duration::from_millis(200),
-            jitter: Duration::from_millis(50),
-            packet_loss: 0.1,
-        },
-        (local_addr, port),
-    )
-    .unwrap();
+    let socket = UdpSocket::bind((local_addr, port)).unwrap();
     socket
         .set_nonblocking(true)
         .expect("Can't set non-blocking mode");
